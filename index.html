@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+
+</body>
+<script>
+    //对象小球
+    //整个页面中生成500个随机位置、随机大小（直径[10,80]之间）、随机颜色的小球(不应该出现rgb(0,0,0))
+
+    function Ball(x, y, w, c) {
+        this.x = x; //横坐标
+        this.y = y; //纵坐标
+        this.w = w; //宽
+        // this.h = w;//高
+        this.c = c; //背景颜色
+    }
+    // 小球显示的方法
+    Ball.prototype.show = function(father) {
+            //进行DOM操作
+            this.b = document.createElement("div");
+            this.b.className = "ball";
+            this.b.style.left = this.x + "px";
+            this.b.style.top = this.y + "px";
+            this.b.style.width = this.w + "px";
+            this.b.style.height = this.w + "px";
+            this.b.style.backgroundColor = this.c;
+            father.appendChild(this.b);
+            // return b;
+        }
+        //小球运动的方法
+    Ball.prototype.move = function() {
+        var sx = randomSpeed();
+        var sy = randomSpeed();
+        var _self = this;
+        setInterval(function() {
+            //1.获取当前位置
+            _self.x += sx;
+            _self.y += sy;
+            if (_self.x <= 0 || _self.x >= (window.innerWidth - _self.w)) {
+                sx *= -1;
+            }
+            if (_self.y <= 0 || _self.y >= (window.innerHeight - _self.w)) {
+                sy *= -1;
+            }
+            _self.b.style.left = _self.x + "px";
+            _self.b.style.top = _self.y + "px";
+        }, 20)
+    }
+
+    for (var i = 0; i < 100; i++) {
+        //创建小球对象
+        var ball = new Ball(randomNum(0, window.innerWidth - 80), randomNum(0, window.innerHeight - 80), randomNum(10, 80), randomColor());
+        //调用自己的显示方法
+        ball.show(document.body);
+        ball.move();
+    }
+
+    //工具函数的封装
+    function randomNum(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    function randomColor() {
+        return 'rgba(' + randomNum(1, 255) + ',' + randomNum(1, 255) + ',' + randomNum(1, 255) + ',' + randomNum(5, 10) / 10 + ')';
+    }
+
+    function randomSpeed() {
+        var sx = randomNum(-10, 10);
+        if (sx != 0) {
+            return sx;
+        }
+        randomSpeed();
+    }
+</script>
+
+</html>
